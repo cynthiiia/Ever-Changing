@@ -186,7 +186,7 @@ function Ghost(color, x, y, id) {
     this.element;
 }
 Ghost.prototype.draw = function () {
-    document.getElementById("game").children[0].insertAdjacentHTML("beforeend", "<img id='"+ this.id +"' src='images/ghost-" + this.color + ".png'>");
+    document.getElementById("game").children[0].insertAdjacentHTML("beforeend", "<img id='" + this.id + "' src='images/ghost-" + this.color + ".png'>");
     this.element = document.getElementById(this.id);
     this.element.style.top = this.y + "%";
     this.element.style.left = this.x + "%";
@@ -276,7 +276,7 @@ Wisp.prototype.draw = function () {
 Wisp.prototype.move = function () {
     var currentWisp = this;
     setInterval(function () {
-        currentWisp.x -= 0.13;
+        currentWisp.x -= 0.10;
         currentWisp.element.style.left = currentWisp.x + "%";
 
     }, 10);
@@ -309,7 +309,64 @@ document.getElementById("start").onclick = function () {
     for (let i = 0; i < wisps.length; i++) {
         wisps[i].move();
     }
-    
+    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+
+    var ghostWidth = ghost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
+    var ghostHeight = ghost.element.clientHeight / gameScreenWidth * 100; // as a percent of the screen
+
+
+    var wispsInterval = setInterval(function () {
+        /* console.log('he');
+        if (wisps[wisps.length - 1].x + 25 < 125) {
+            var previousWispX = wisps[wisps.length - 1].x;
+            wisps.push(new Wisp("white", previousWispX + 25, startingY, "wisp" + wisps.length));
+            wisps[wisps.length - 1].draw();
+            wisps[wisps.length - 1].move();
+        } */
+        var numOfIterations = wisps.length;
+        for (let i = 0; i < numOfIterations; i++) {
+            var wispWidth = wisps[i].element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
+            var wispHeight = wisps[i].element.clientHeight / gameScreenWidth * 100; // as a percent of the screen
+
+            if (ghost.x + ghostWidth >= wisps[i].x && ghost.x <= wisps[i].x + wispWidth && ghost.y + ghostHeight >= wisps[i].y) {
+                //update the score
+                score += 1;
+                document.getElementById("score").children[0].children[0].textContent = score;
+
+                //shift the wisp object to the back and fix the iterations of the loop
+                var removedWisps = wisps.splice(i, 1);
+                wisps = wisps.concat(removedWisps);
+                numOfIterations -= 1;
+                i -= 1;
+
+                // redraw the wisp to the end
+                wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
+                var previousWispX = wisps[wisps.length - 2].x;
+                wisps[wisps.length - 1].x = previousWispX + 25
+                wisps[wisps.length - 1].draw();
+
+            }
+            if (wisps[i].x < -5) { // fix this werid thing to redraw items that move out of the screen 
+                //shift the wisp object to the back and fix the iterations of the loop
+                var removedWisps = wisps.splice(i, 1);
+                wisps = wisps.concat(removedWisps);
+                numOfIterations -= 1;
+                i -= 1;
+
+                
+                // redraw the wisp to the end
+                wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
+                var previousWispX = wisps[wisps.length - 2].x;
+                wisps[wisps.length - 1].x = previousWispX + 25
+                wisps[wisps.length - 1].draw();
+
+            }
+
+        }
+
+    }, 10);
+
+
 
 }
 
@@ -322,12 +379,9 @@ function initApp() {
     wisps.push(new Wisp("white", 40, startingY, "wisp" + wisps.length));
     wisps[0].draw();
 
-
-    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
-
-    while (wisps[wisps.length - 1].x / 100 * gameScreenWidth + 300 < gameScreenWidth) {
+    while (wisps[wisps.length - 1].x + 25 < 125) {
         var previousWispX = wisps[wisps.length - 1].x;
-        wisps.push(new Wisp("white", previousWispX + 300 / gameScreenWidth * 100, startingY, "wisp" + wisps.length));
+        wisps.push(new Wisp("white", previousWispX + 25, startingY, "wisp" + wisps.length));
         wisps[wisps.length - 1].draw();
     }
 
