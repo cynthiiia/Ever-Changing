@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Ever Changing</title>
+
+    <link rel="icon" href="images/ghost-white.png">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Didact+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!--Font Awesome-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--CSS-->
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.5/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.5/firebase-firestore.js"></script>
+
+</head>
+
+<body>
+    <!--Navigation Bar-->
+    <nav class="navbar bg-dark navbar-dark fixed-top navbar-expand">
+        <div class="container-fluid">
+            <a id="chatsTrigger"><img src="images/ghost-white.png"></a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a id="loginOpen" class="nav-link"><span class="fa fa-sign-in"></span> Login</a>
+                    <div class="form-popup" id="loginForm">
+                        <form class="form-container">
+                            <h1>Login</h1>
+                            <label for="email"><b>Email</b></label>
+                            <input type="text" placeholder="Enter Email" name="email" required>
+                            <label for="password"><b>Password</b></label>
+                            <input type="password" placeholder="Enter Password" name="password" required>
+                            <a class="submit" id="loginSubmit">Submit</a>
+                            <a class="cancel" id="loginCancel">Close</a>
+                            <p></p>
+
+                        </form>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a id="signupOpen" class="nav-link"><span class="fa fa-user"></span> Sign Up</a>
+                    <div class="form-popup" id="signupForm">
+                        <form class="form-container">
+                            <h1>Sigup</h1>
+                            <label for="firstName"><b>First Name</b></label>
+                            <input type="text" placeholder="Enter First Name" name="firstName" required>
+                            <label for="lastName"><b>Last Name</b></label>
+                            <input type="text" placeholder="Enter Last Name" name="lastName" required>
+                            <label for="email"><b>Email</b></label>
+                            <input type="text" placeholder="Enter Email" name="email" required>
+                            <p></p>
+                            <label for="password"><b>Password</b></label>
+                            <input type="password" placeholder="Enter Password" name="password" required>
+                            <p></p>
+                            <a class="submit" id="signupSubmit">Submit</a>
+                            <a class="cancel" id="signupCancel">Close</a>
+
+                        </form>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a id="userOpen" class="nav-link"></a>
+                    <div class="form-popup" id="userForm">
+                        <form class="form-container">
+                            <a class="cancel" id="logout">Logout</a>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid" id="game-container">
+        <div class="row" id="score">
+            <div class="col-12 text-center">
+                <h1>0</h1>
+            </div>
+        </div>
+        <div class="row" id="game">
+            <div class="col-12">
+                <div id="start-div">
+                    <button type="button" class="btn btn-success" id="start">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--JS File-->
+    <script data-main="main.js" src="require.js"></script>
+
+</body>
+
+</html>
