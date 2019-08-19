@@ -20,6 +20,9 @@ var score = 0;
 var ghost;
 var wisps = [];
 var startingY = 40;
+var rightFired = false;
+var leftFired = false;
+var gameover = false;
 
 //Navbar signup/signout and login action
 document.getElementById("signupOpen").onclick = function () {
@@ -231,6 +234,7 @@ Ghost.prototype.moveRight = function () {
     document.body.onkeyup = function (e) {
         if (e.keyCode == 39) {
             clearInterval(rightIntervalId);
+            rightFired = false;
         }
     }
 }
@@ -250,6 +254,7 @@ Ghost.prototype.moveLeft = function () {
     document.body.onkeyup = function (e) {
         if (e.keyCode == 37) {
             clearInterval(leftIntervalId);
+            leftFired = false;
         }
     }
 }
@@ -288,10 +293,12 @@ document.getElementById("start").onclick = function () {
         if (e.keyCode == 32) {
             ghost.jump();
         }
-        if (e.keyCode == 39) {
+        if (e.keyCode == 39 && rightFired == false) {
+            rightFired = true;
             ghost.moveRight();
         }
-        if (e.keyCode == 37) {
+        if (e.keyCode == 37 && leftFired == false) {
+            leftFired = true;
             ghost.moveLeft();
         }
         if (e.keyCode == 38) {
@@ -302,7 +309,7 @@ document.getElementById("start").onclick = function () {
     for (let i = 0; i < wisps.length; i++) {
         wisps[i].move();
     }
-
+    
 
 }
 
