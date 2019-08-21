@@ -19,7 +19,7 @@ var name, email;
 var score = 0;
 var ghost;
 var wisps = [];
-var colors = ["white", "pink", "blue", "green", "yellow", "purple", "orange"];
+var colors = ["white", "pink", "blue", "green", "purple"];
 var startingY = 40;
 var rightFired = false;
 var leftFired = false;
@@ -280,7 +280,7 @@ Wisp.prototype.draw = function () {
 Wisp.prototype.move = function () {
     var currentWisp = this;
     setInterval(function () {
-        currentWisp.x -= 0.10;
+        currentWisp.x -= 0.20;
         currentWisp.element.style.left = currentWisp.x + "%";
 
     }, 10);
@@ -289,6 +289,38 @@ Wisp.prototype.move = function () {
 
 /* this.x = x * document.getElementById("game").children[0].clientWidth;
 this.y = y * document.getElementById("game").children[0].clientHeight; */
+
+function randomGhostColor(currentColor) {
+
+    var randColor = colors[Math.floor(Math.random() * colors.length)]; // choose a random color first 
+    while (randColor == currentColor) {
+        randColor = colors[Math.floor(Math.random() * colors.length)];
+    }
+    return randColor;
+}
+
+function randomWispColor(prefColor) {
+
+    var nonPrefColors = colors.filter(function (color) {
+        console.log("here" + prefColor);
+        return color != prefColor;
+    });
+    var rearrangedColors = [prefColor];
+    rearrangedColors = rearrangedColors.concat(nonPrefColors);
+    console.log(nonPrefColors + " " + rearrangedColors);
+    var randNum = Math.random();
+    if (randNum <= 0.8) {
+        return rearrangedColors[0];
+    } else if (randNum <= 0.85) {
+        return rearrangedColors[1];
+    } else if (randNum <= 0.90) {
+        return rearrangedColors[2];
+    } else if (randNum <= 0.95) {
+        return rearrangedColors[3];
+    } else if (randNum <= 1.00) {
+        return rearrangedColors[4];
+    }
+}
 
 document.getElementById("start").onclick = function () {
     document.getElementById("start").style.display = "none";
@@ -314,9 +346,10 @@ document.getElementById("start").onclick = function () {
         wisps[i].move();
     }
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
 
     var ghostWidth = ghost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
-    var ghostHeight = ghost.element.clientHeight / gameScreenWidth * 100; // as a percent of the screen
+    var ghostHeight = ghost.element.clientHeight / gameScreenHeight * 100; // as a percent of the screen
 
 
     var wispsInterval = setInterval(function () {
@@ -347,6 +380,8 @@ document.getElementById("start").onclick = function () {
                 wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
                 var previousWispX = wisps[wisps.length - 2].x;
                 wisps[wisps.length - 1].x = previousWispX + 25
+                console.log("ghost" + ghost.color);
+                wisps[wisps.length - 1].color = randomWispColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
             } else if (wisps[i].x < -10) { // fix this werid thing to redraw items that move out of the screen 
@@ -361,6 +396,7 @@ document.getElementById("start").onclick = function () {
                 wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
                 var previousWispX = wisps[wisps.length - 2].x;
                 wisps[wisps.length - 1].x = previousWispX + 25
+                wisps[wisps.length - 1].color = randomWispColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
             }
@@ -370,21 +406,18 @@ document.getElementById("start").onclick = function () {
     }, 10);
 
     var colorInterval = setInterval(function () {
-        var randColor = colors[Math.floor(Math.random() * colors.length)]; // choose a random color first 
-        while (randColor == ghost.color) {
-            randColor = colors[Math.floor(Math.random() * colors.length)]; 
-        }
         // Redraw the ghost
+        var randColor = randomGhostColor(ghost.color);
         ghost.color = randColor;
         ghost.element.parentElement.removeChild(ghost.element);
         ghost.draw();
+        /* 
+                for (let i = 0; i < wisps.length; i++) {
 
-        for (let i = 0; i < wisps.length; i++) {
-            
-            wisps[i].element.parentElement.removeChild(wisps[i].element);
-            wisps[i].color = randColor;
-            wisps[i].draw();
-        }
+                    wisps[i].element.parentElement.removeChild(wisps[i].element);
+                    wisps[i].color = randColor;
+                    wisps[i].draw();
+                } */
 
     }, 10000)
 
@@ -400,7 +433,7 @@ function initApp() {
     wisps.push(new Wisp("white", 40, startingY, "wisp" + wisps.length, 10));
     wisps[0].draw();
 
-    while (wisps[wisps.length - 1].x + 25 < 125) {
+    while (wisps[wisps.length - 1].x + 25 < 150) {
         var previousWispX = wisps[wisps.length - 1].x;
         wisps.push(new Wisp("white", previousWispX + 25, startingY, "wisp" + wisps.length, 10));
         wisps[wisps.length - 1].draw();
