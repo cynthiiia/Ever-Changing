@@ -366,7 +366,7 @@ document.getElementById("start").onclick = function () {
                     wisps[i].draw();
                 } */
 
-    }, 10000)
+    }, 1000)
 
     var wispsInterval = setInterval(function () {
         /* console.log('he');
@@ -407,8 +407,8 @@ document.getElementById("start").onclick = function () {
                 for (let i = 0; i < wisps.length; i++) {
                     clearInterval(wisps[i].interval);
                 }
-                document.getElementById("game").children[0].insertAdjacentHTML("afterbegin", "<h1>Game Over</h1>"); // fix this
-                //document.getElementById("start").style.display = "block";
+                document.getElementById("gameover-div").style.display = "flex"; // fix this
+                document.getElementById("start").style.display = "block";
 
 
             } else if (wisps[i].x < -10) { // fix this werid thing to redraw items that move out of the screen 
