@@ -269,6 +269,7 @@ function Wisp(color, x, y, id, value) {
     this.id = id;
     this.element;
     this.value = value;
+    this.interval;
 }
 
 Wisp.prototype.draw = function () {
@@ -279,7 +280,7 @@ Wisp.prototype.draw = function () {
 }
 Wisp.prototype.move = function () {
     var currentWisp = this;
-    setInterval(function () {
+    this.interval = setInterval(function () {
         currentWisp.x -= 0.20;
         currentWisp.element.style.left = currentWisp.x + "%";
 
@@ -307,7 +308,7 @@ function randomWispColor(prefColor) {
     });
     var rearrangedColors = [prefColor];
     rearrangedColors = rearrangedColors.concat(nonPrefColors);
-    console.log(nonPrefColors + " " + rearrangedColors);
+
     var randNum = Math.random();
     if (randNum <= 0.8) {
         return rearrangedColors[0];
@@ -351,6 +352,21 @@ document.getElementById("start").onclick = function () {
     var ghostWidth = ghost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
     var ghostHeight = ghost.element.clientHeight / gameScreenHeight * 100; // as a percent of the screen
 
+    var colorInterval = setInterval(function () {
+        // Redraw the ghost
+        var randColor = randomGhostColor(ghost.color);
+        ghost.color = randColor;
+        ghost.element.parentElement.removeChild(ghost.element);
+        ghost.draw();
+        /* 
+                for (let i = 0; i < wisps.length; i++) {
+
+                    wisps[i].element.parentElement.removeChild(wisps[i].element);
+                    wisps[i].color = randColor;
+                    wisps[i].draw();
+                } */
+
+    }, 10000)
 
     var wispsInterval = setInterval(function () {
         /* console.log('he');
@@ -384,6 +400,17 @@ document.getElementById("start").onclick = function () {
                 wisps[wisps.length - 1].color = randomWispColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
+            } else if (ghost.x + ghostWidth >= wisps[i].x && ghost.x <= wisps[i].x + wispWidth && ghost.y + ghostHeight >= wisps[i].y && ghost.color != wisps[i].color) {
+                gameover = true;
+                clearInterval(wispsInterval);
+                clearInterval(colorInterval);
+                for (let i = 0; i < wisps.length; i++) {
+                    clearInterval(wisps[i].interval);
+                }
+                document.getElementById("game").children[0].insertAdjacentHTML("afterbegin", "<h1>Game Over</h1>"); // fix this
+                //document.getElementById("start").style.display = "block";
+
+
             } else if (wisps[i].x < -10) { // fix this werid thing to redraw items that move out of the screen 
                 //shift the wisp object to the back and fix the iterations of the loop
                 var removedWisps = wisps.splice(i, 1);
@@ -405,21 +432,7 @@ document.getElementById("start").onclick = function () {
 
     }, 10);
 
-    var colorInterval = setInterval(function () {
-        // Redraw the ghost
-        var randColor = randomGhostColor(ghost.color);
-        ghost.color = randColor;
-        ghost.element.parentElement.removeChild(ghost.element);
-        ghost.draw();
-        /* 
-                for (let i = 0; i < wisps.length; i++) {
 
-                    wisps[i].element.parentElement.removeChild(wisps[i].element);
-                    wisps[i].color = randColor;
-                    wisps[i].draw();
-                } */
-
-    }, 10000)
 
 
 }

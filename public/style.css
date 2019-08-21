@@ -148,7 +148,7 @@ input+p {
 }
 
 #game-container #game #ghost {
-    height: 70px;
+    height: 75px;
     position: absolute;
     top: 50%;
     left: 10%;
@@ -156,7 +156,7 @@ input+p {
 }
 
 #game-container #game .wisp {
-    height: 80px;
+    height: 60px;
     position: absolute;
     top: 50%;
     left: 10%;
