@@ -323,8 +323,27 @@ function randomWispColor(prefColor) {
     }
 }
 
+
+function setup() {
+    ghost = new Ghost("white", 5, startingY, "ghost");
+    ghost.draw();
+
+
+    wisps.push(new Wisp("white", 40, startingY, "wisp" + wisps.length, 10));
+    wisps[0].draw();
+
+    while (wisps[wisps.length - 1].x + 25 < 150) {
+        var previousWispX = wisps[wisps.length - 1].x;
+        wisps.push(new Wisp("white", previousWispX + 25, startingY, "wisp" + wisps.length, 10));
+        wisps[wisps.length - 1].draw();
+    }
+}
+
+
+
 document.getElementById("start").onclick = function () {
     document.getElementById("start").style.display = "none";
+    document.getElementById("gameover-div").style.display = "none";
 
     document.body.onkeydown = function (e) {
         if (e.keyCode == 32) {
@@ -401,13 +420,26 @@ document.getElementById("start").onclick = function () {
                 wisps[wisps.length - 1].draw();
 
             } else if (ghost.x + ghostWidth >= wisps[i].x && ghost.x <= wisps[i].x + wispWidth && ghost.y + ghostHeight >= wisps[i].y && ghost.color != wisps[i].color) {
-                gameover = true;
+                //gameover = true;
                 clearInterval(wispsInterval);
                 clearInterval(colorInterval);
                 for (let i = 0; i < wisps.length; i++) {
                     clearInterval(wisps[i].interval);
                 }
-                document.getElementById("gameover-div").style.display = "flex"; // fix this
+
+                for (let i = 0; i < wisps.length; i++) {
+
+                    wisps[i].element.parentElement.removeChild(wisps[i].element);
+                }
+                ghost.element.parentElement.removeChild(ghost.element);
+
+                score = 0;
+                ghost = null;
+                wisps = [];
+
+                setup();
+
+                document.getElementById("gameover-div").style.display = "flex";
                 document.getElementById("start").style.display = "block";
 
 
@@ -439,21 +471,7 @@ document.getElementById("start").onclick = function () {
 
 
 function initApp() {
-    ghost = new Ghost("white", 5, startingY, "ghost");
-    ghost.draw();
-
-
-    wisps.push(new Wisp("white", 40, startingY, "wisp" + wisps.length, 10));
-    wisps[0].draw();
-
-    while (wisps[wisps.length - 1].x + 25 < 150) {
-        var previousWispX = wisps[wisps.length - 1].x;
-        wisps.push(new Wisp("white", previousWispX + 25, startingY, "wisp" + wisps.length, 10));
-        wisps[wisps.length - 1].draw();
-    }
-
-
-
+    setup();
 
     firebase.auth().onAuthStateChanged(function (user) {
 
