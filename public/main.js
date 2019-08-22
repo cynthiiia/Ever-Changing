@@ -341,8 +341,10 @@ function setup() {
 
 document.getElementById("start").onclick = function () {
     // set display of the elements that are not needed to none
-    document.getElementById("start").style.display = "none";
-    document.getElementById("gameover-div").style.display = "none";
+    document.getElementById("start").style.opacity = "0";
+    document.getElementById("start").style.visibility = "hidden";
+    document.getElementById("gameover-div").style.opacity = "0";
+    document.getElementById("gameover-div").style.visibility = "hidden";
 
     // set up the the movement for the ghost
     document.body.onkeydown = function (e) {
@@ -425,8 +427,10 @@ document.getElementById("start").onclick = function () {
 
                 setup();
 
-                document.getElementById("gameover-div").style.display = "flex";
-                document.getElementById("start").style.display = "block";
+                document.getElementById("gameover-div").style.opacity = "1";
+                document.getElementById("gameover-div").style.visibility = "visible";
+                document.getElementById("start").style.opacity = "1";
+                document.getElementById("start").style.visibility = "visible";
 
 
             } else if (wisps[i].x < -10) { // fix this werid thing to redraw items that move out of the screen 
