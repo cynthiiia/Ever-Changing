@@ -373,7 +373,7 @@ document.getElementById("start").onclick = function () {
         ghost.changeColor();
         ghost.element.parentElement.removeChild(ghost.element);
         ghost.draw();
-    }, 8000)
+    }, 1000)
 
     //set up every 10 ms there will be a check if the wisps and ghost are touching, and checks if its the same colour or not and handles it. also checks if the wisps are out of screen
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
