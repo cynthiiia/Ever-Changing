@@ -346,6 +346,9 @@ document.getElementById("start").onclick = function () {
     document.getElementById("gameover-div").style.opacity = "0";
     document.getElementById("gameover-div").style.visibility = "hidden";
 
+    document.getElementById("score").children[0].children[0].textContent = 0; // cant clear this yet - fixed
+    score = 0;
+
     // set up the the movement for the ghost
     document.body.onkeydown = function (e) {
         if (e.keyCode == 32) {
@@ -368,14 +371,22 @@ document.getElementById("start").onclick = function () {
     for (let i = 0; i < wisps.length; i++) {
         wisps[i].move();
     }
+    
+    var ghostColorCountdown = setInterval(function () {
 
+        var currentTime = document.querySelector("#score .col-12 h5").textContent.split(" ")[3];
+        var newTime = currentTime == "0" ? "Colour Change in: 8" : "Colour Change in: " + (parseInt(currentTime) - 1);
+        document.querySelector("#score .col-12 h5").textContent = newTime;
+
+    }, 1000);
+    
     // set up every 8 seconds the ghost will change colour
     var ghostColorInterval = setInterval(function () {
         // Redraw the ghost
         ghost.changeColor();
         ghost.element.parentElement.removeChild(ghost.element);
         ghost.draw();
-    }, 1000)
+    }, 9000)
 
     //set up every 10 ms there will be a check if the wisps and ghost are touching, and checks if its the same colour or not and handles it. also checks if the wisps are out of screen
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
@@ -412,6 +423,7 @@ document.getElementById("start").onclick = function () {
                 //gameover = true;
                 clearInterval(wispsInterval);
                 clearInterval(ghostColorInterval);
+                clearInterval(ghostColorCountdown);
                 for (let i = 0; i < wisps.length; i++) {
                     clearInterval(wisps[i].interval);
                 }
@@ -421,10 +433,11 @@ document.getElementById("start").onclick = function () {
                 }
                 ghost.element.parentElement.removeChild(ghost.element);
 
-                score = 0;
                 ghost = null;
                 wisps = [];
 
+                document.querySelector("#score .col-12 h5").textContent = "Color Change in: 8"; // fix this  - fixed
+                // other things: increasing dfficulty and fixing ghosts (spawning, direction, colours etc) then saving scores
                 setup();
 
                 document.getElementById("gameover-div").style.opacity = "1";
