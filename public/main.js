@@ -371,7 +371,7 @@ document.getElementById("start").onclick = function () {
     for (let i = 0; i < wisps.length; i++) {
         wisps[i].move();
     }
-    
+
     var ghostColorCountdown = setInterval(function () {
 
         var currentTime = document.querySelector("#score .col-12 h5").textContent.split(" ")[3];
@@ -379,7 +379,7 @@ document.getElementById("start").onclick = function () {
         document.querySelector("#score .col-12 h5").textContent = newTime;
 
     }, 1000);
-    
+
     // set up every 8 seconds the ghost will change colour
     var ghostColorInterval = setInterval(function () {
         // Redraw the ghost
@@ -399,9 +399,10 @@ document.getElementById("start").onclick = function () {
         var numOfIterations = wisps.length;
         for (let i = 0; i < numOfIterations; i++) {
             var wispWidth = wisps[i].element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
+            var wispHeight = wisps[i].element.clientHeight / gameScreenHeight * 100; // as a percent of the screen
             // var wispHeight = wisps[i].element.clientHeight / gameScreenWidth * 100; // as a percent of the screen
 
-            if (ghost.x + ghostWidth >= wisps[i].x && ghost.x <= wisps[i].x + wispWidth && ghost.y + ghostHeight >= wisps[i].y && ghost.color == wisps[i].color) {
+            if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.color == wisps[i].color) {
                 //update the score
                 score += wisps[i].value;
                 document.getElementById("score").children[0].children[0].textContent = score;
@@ -419,7 +420,7 @@ document.getElementById("start").onclick = function () {
                 wisps[wisps.length - 1].changeColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
-            } else if (ghost.x + ghostWidth >= wisps[i].x && ghost.x <= wisps[i].x + wispWidth && ghost.y + ghostHeight >= wisps[i].y && ghost.color != wisps[i].color) {
+            } else if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.color != wisps[i].color) {
                 //gameover = true;
                 clearInterval(wispsInterval);
                 clearInterval(ghostColorInterval);
