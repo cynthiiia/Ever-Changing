@@ -23,6 +23,8 @@ var colors = ["white", "pink", "blue", "green", "purple"];
 var startingY = 40;
 var rightFired = false;
 var leftFired = false;
+var upFired = false;
+var downFired = false;
 var gameover = false;
 
 //Navbar signup/signout and login action
@@ -185,6 +187,7 @@ function Ghost(color, x, y, id) {
     this.y = y;
     this.id = id;
     this.element;
+    this.interval = ["right", "left", "up", "down"];
 }
 Ghost.prototype.draw = function () {
     document.getElementById("game").children[0].insertAdjacentHTML("beforeend", "<img id='" + this.id + "' src='images/ghost-" + this.color + ".png'>");
@@ -193,7 +196,7 @@ Ghost.prototype.draw = function () {
     this.element.style.left = this.x + "%";
 
 }
-Ghost.prototype.jump = function () {
+/* Ghost.prototype.jump = function () {
     var originalY = startingY;
     var currentGhost = this;
     if (currentGhost.y == originalY) {
@@ -216,7 +219,7 @@ Ghost.prototype.jump = function () {
 
         }, 10)
     }
-}
+} */
 
 Ghost.prototype.moveRight = function () {
     var currentGhost = this;
@@ -232,13 +235,7 @@ Ghost.prototype.moveRight = function () {
             rightFired = false;
         }
     }, 10)
-
-    document.body.onkeyup = function (e) {
-        if (e.keyCode == 39) {
-            clearInterval(rightIntervalId);
-            rightFired = false;
-        }
-    }
+    this.interval[0] = rightIntervalId;
 }
 
 Ghost.prototype.moveLeft = function () {
@@ -253,13 +250,39 @@ Ghost.prototype.moveLeft = function () {
             leftFired = false;
         }
     }, 10)
+    this.interval[1] = leftIntervalId;
 
-    document.body.onkeyup = function (e) {
-        if (e.keyCode == 37) {
-            clearInterval(leftIntervalId);
-            leftFired = false;
+}
+
+Ghost.prototype.moveUp = function () {
+    var currentGhost = this;
+
+    var upIntervalId = setInterval(function () {
+        if (currentGhost.y - 0.4 > 0) {
+            currentGhost.y -= 0.4;
+            currentGhost.element.style.top = currentGhost.y + "%";
+        } else {
+            clearInterval(upIntervalId);
+            upFired = false;
         }
-    }
+    }, 10)
+    this.interval[2] = upIntervalId;
+
+}
+
+Ghost.prototype.moveDown = function () {
+    var currentGhost = this;
+
+    var downIntervalId = setInterval(function () {
+        if (currentGhost.y + 0.4 < 100) {
+            currentGhost.y += 0.4;
+            currentGhost.element.style.top = currentGhost.y + "%";
+        } else {
+            clearInterval(downIntervalId);
+            downFired = false;
+        }
+    }, 10)
+    this.interval[3] = downIntervalId;
 }
 
 Ghost.prototype.changeColor = function () {
@@ -273,33 +296,33 @@ Ghost.prototype.changeColor = function () {
 
 function Wisp(color, id, value) {
     this.color = color;
-    this.changePosition();
-    if (this.x < 0 && !(this.y >= 0 && this.y <= 100)) { // left side top and bottom
-        this.xDirection = "right";
-        this.yDirection = this.y < 0 ? "down" : "up"
-    } else if (this.x > 100 && !(this.y >= 0 && this.y <= 100)) { // right side top and bottom 
-        this.xDirection = "left";
-        this.yDirection = this.y < 0 ? "down" : "up"
-    } else if ((this.x >= 0 && this.x <= 100) && !(this.y >= 0 && this.y <= 100)) {
-        this.xDirection = Math.floor(Math.random() * 2) == 0 ? "left" : "right";
-        this.yDirection = this.y < 0 ? "down" : "up"
-    } else if (!(this.x >= 0 && this.x <= 100) && (this.y >= 0 && this.y <= 100)) {
-        this.yDirection = Math.floor(Math.random() * 2) == 0 ? "down" : "up";
-        this.xDirection = this.x < 0 ? "right" : "left"
-
-    }
+    this.changePositionDirection();
     this.value = value;
     this.id = id;
     this.element;
     this.interval;
 }
 
-Wisp.prototype.changePosition = function () {
+Wisp.prototype.changePositionDirection = function () {
     this.x = Math.random() * (150 - (-50)) - 50;
     this.y = Math.random() * (150 - (-50)) - 50;
     while ((0 <= this.x && this.x <= 100) && (0 <= this.y && this.y <= 100)) {
         this.x = Math.random() * (150 - (-50)) - 50;
         this.y = Math.random() * (150 - (-50)) - 50;
+    }
+    if (this.x < 30 && !(this.y >= 30 && this.y <= 70)) { // left side top and bottom
+        this.xDirection = "right";
+        this.yDirection = this.y < 30 ? "down" : "up"
+    } else if (this.x > 70 && !(this.y >= 30 && this.y <= 70)) { // right side top and bottom 
+        this.xDirection = "left";
+        this.yDirection = this.y < 30 ? "down" : "up"
+    } else if ((this.x >= 30 && this.x <= 70) && !(this.y >= 0 && this.y <= 100)) {
+        this.xDirection = Math.floor(Math.random() * 2) == 0 ? "left" : "right";
+        this.yDirection = this.y < 0 ? "down" : "up"
+    } else if (!(this.x >= 30 && this.x <= 70) && (this.y >= 0 && this.y <= 100)) {
+        this.yDirection = Math.floor(Math.random() * 2) == 0 ? "down" : "up";
+        this.xDirection = this.x < 0 ? "right" : "left"
+
     }
 
 }
@@ -365,7 +388,7 @@ function setup() {
     ghost = new Ghost("white", 45, startingY, "ghost");
     ghost.draw();
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
         wisps.push(new Wisp("white", "wisp" + wisps.length, 10));
         wisps[i].draw();
     }
@@ -385,9 +408,9 @@ document.getElementById("start").onclick = function () {
 
     // set up the the movement for the ghost
     document.body.onkeydown = function (e) {
-        if (e.keyCode == 32) {
-            ghost.jump();
-        }
+        /*         if (e.keyCode == 32) {
+                    ghost.jump();
+                } */
         if (e.keyCode == 39 && rightFired == false && leftFired == false) {
             rightFired = true;
             ghost.moveRight();
@@ -396,8 +419,33 @@ document.getElementById("start").onclick = function () {
             leftFired = true;
             ghost.moveLeft();
         }
+        if (e.keyCode == 38 && downFired == false && upFired == false) {
+            upFired = true;
+            ghost.moveUp();
+        }
+        if (e.keyCode == 40 && downFired == false && upFired == false) {
+            downFired = true;
+            ghost.moveDown();
+        }
+    }
+
+
+    document.body.onkeyup = function (e) {
+        if (e.keyCode == 39) {
+            clearInterval(ghost.interval[0]);
+            rightFired = false;
+        }
+        if (e.keyCode == 37) {
+            clearInterval(ghost.interval[1]);
+            leftFired = false;
+        }
         if (e.keyCode == 38) {
-            ghost.jump();
+            clearInterval(ghost.interval[2]);
+            upFired = false;
+        }
+        if (e.keyCode == 40) {
+            clearInterval(ghost.interval[3]);
+            downFired = false;
         }
     }
 
@@ -449,7 +497,7 @@ document.getElementById("start").onclick = function () {
 
                 // redraw the wisp to the end
                 wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
-                wisps[wisps.length - 1].changePosition();
+                wisps[wisps.length - 1].changePositionDirection();
                 wisps[wisps.length - 1].changeColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
@@ -490,7 +538,7 @@ document.getElementById("start").onclick = function () {
 
                 // redraw the wisp to the end
                 wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
-                wisps[wisps.length - 1].changePosition();
+                wisps[wisps.length - 1].changePositionDirection();
                 wisps[wisps.length - 1].changeColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
