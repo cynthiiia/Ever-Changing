@@ -227,8 +227,8 @@ Ghost.prototype.moveRight = function () {
     var ghostSize = currentGhost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
 
     var rightIntervalId = setInterval(function () {
-        if (currentGhost.x + ghostSize + 0.4 < 100) {
-            currentGhost.x += 0.4;
+        if (currentGhost.x + ghostSize + 0.6 < 100) {
+            currentGhost.x += 0.6;
             currentGhost.element.style.left = currentGhost.x + "%";
         } else {
             clearInterval(rightIntervalId);
@@ -242,8 +242,8 @@ Ghost.prototype.moveLeft = function () {
     var currentGhost = this;
 
     var leftIntervalId = setInterval(function () {
-        if (currentGhost.x - 0.4 > 0) {
-            currentGhost.x -= 0.4;
+        if (currentGhost.x - 0.6 > 0) {
+            currentGhost.x -= 0.6;
             currentGhost.element.style.left = currentGhost.x + "%";
         } else {
             clearInterval(leftIntervalId);
@@ -258,8 +258,8 @@ Ghost.prototype.moveUp = function () {
     var currentGhost = this;
 
     var upIntervalId = setInterval(function () {
-        if (currentGhost.y - 0.4 > 0) {
-            currentGhost.y -= 0.4;
+        if (currentGhost.y - 0.6 > 0) {
+            currentGhost.y -= 0.6;
             currentGhost.element.style.top = currentGhost.y + "%";
         } else {
             clearInterval(upIntervalId);
@@ -274,8 +274,8 @@ Ghost.prototype.moveDown = function () {
     var currentGhost = this;
 
     var downIntervalId = setInterval(function () {
-        if (currentGhost.y + 0.4 < 100) {
-            currentGhost.y += 0.4;
+        if (currentGhost.y + 0.6 < 100) {
+            currentGhost.y += 0.6;
             currentGhost.element.style.top = currentGhost.y + "%";
         } else {
             clearInterval(downIntervalId);
@@ -388,7 +388,7 @@ function setup() {
     ghost = new Ghost("white", 45, startingY, "ghost");
     ghost.draw();
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 5; i++) {
         wisps.push(new Wisp("white", "wisp" + wisps.length, 10));
         wisps[i].draw();
     }
