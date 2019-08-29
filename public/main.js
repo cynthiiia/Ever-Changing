@@ -271,14 +271,37 @@ Ghost.prototype.changeColor = function () {
     this.color = randColor;
 }
 
-function Wisp(color, x, y, id, value) {
+function Wisp(color, id, value) {
     this.color = color;
-    this.x = x;
-    this.y = y;
+    this.changePosition();
+    if (this.x < 0 && !(this.y >= 0 && this.y <= 100)) { // left side top and bottom
+        this.xDirection = "right";
+        this.yDirection = this.y < 0 ? "down" : "up"
+    } else if (this.x > 100 && !(this.y >= 0 && this.y <= 100)) { // right side top and bottom 
+        this.xDirection = "left";
+        this.yDirection = this.y < 0 ? "down" : "up"
+    } else if ((this.x >= 0 && this.x <= 100) && !(this.y >= 0 && this.y <= 100)) {
+        this.xDirection = Math.floor(Math.random() * 2) == 0 ? "left" : "right";
+        this.yDirection = this.y < 0 ? "down" : "up"
+    } else if (!(this.x >= 0 && this.x <= 100) && (this.y >= 0 && this.y <= 100)) {
+        this.yDirection = Math.floor(Math.random() * 2) == 0 ? "down" : "up";
+        this.xDirection = this.x < 0 ? "right" : "left"
+
+    }
+    this.value = value;
     this.id = id;
     this.element;
-    this.value = value;
     this.interval;
+}
+
+Wisp.prototype.changePosition = function () {
+    this.x = Math.random() * (150 - (-50)) - 50;
+    this.y = Math.random() * (150 - (-50)) - 50;
+    while ((0 <= this.x && this.x <= 100) && (0 <= this.y && this.y <= 100)) {
+        this.x = Math.random() * (150 - (-50)) - 50;
+        this.y = Math.random() * (150 - (-50)) - 50;
+    }
+
 }
 
 Wisp.prototype.draw = function () {
@@ -290,8 +313,24 @@ Wisp.prototype.draw = function () {
 Wisp.prototype.move = function () {
     var currentWisp = this;
     this.interval = setInterval(function () {
-        currentWisp.x -= 0.20;
-        currentWisp.element.style.left = currentWisp.x + "%";
+        if (currentWisp.xDirection == "left") {
+            currentWisp.x -= 0.20;
+            currentWisp.element.style.left = currentWisp.x + "%";
+
+        } else if (currentWisp.xDirection == "right") {
+            currentWisp.x += 0.20;
+            currentWisp.element.style.left = currentWisp.x + "%";
+
+        }
+        if (currentWisp.yDirection == "up") {
+            currentWisp.y -= 0.20;
+            currentWisp.element.style.top = currentWisp.y + "%";
+
+        } else if (currentWisp.yDirection == "down") {
+            currentWisp.y += 0.20;
+            currentWisp.element.style.top = currentWisp.y + "%";
+
+        }
 
     }, 10);
 }
@@ -323,17 +362,12 @@ Wisp.prototype.changeColor = function (prefColor) {
 
 
 function setup() {
-    ghost = new Ghost("white", 5, startingY, "ghost");
+    ghost = new Ghost("white", 45, startingY, "ghost");
     ghost.draw();
 
-
-    wisps.push(new Wisp("white", 40, startingY, "wisp" + wisps.length, 10));
-    wisps[0].draw();
-
-    while (wisps[wisps.length - 1].x + 25 < 150) {
-        var previousWispX = wisps[wisps.length - 1].x;
-        wisps.push(new Wisp("white", previousWispX + 25, startingY, "wisp" + wisps.length, 10));
-        wisps[wisps.length - 1].draw();
+    for (let i = 0; i < 5; i++) {
+        wisps.push(new Wisp("white", "wisp" + wisps.length, 10));
+        wisps[i].draw();
     }
 }
 
@@ -402,7 +436,7 @@ document.getElementById("start").onclick = function () {
             var wispHeight = wisps[i].element.clientHeight / gameScreenHeight * 100; // as a percent of the screen
             // var wispHeight = wisps[i].element.clientHeight / gameScreenWidth * 100; // as a percent of the screen
 
-            if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.color == wisps[i].color) {
+            if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.y <= (wisps[i].y + wispHeight * 0.75) && ghost.color == wisps[i].color) {
                 //update the score
                 score += wisps[i].value;
                 document.getElementById("score").children[0].children[0].textContent = score;
@@ -415,12 +449,11 @@ document.getElementById("start").onclick = function () {
 
                 // redraw the wisp to the end
                 wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
-                var previousWispX = wisps[wisps.length - 2].x;
-                wisps[wisps.length - 1].x = previousWispX + 25;
+                wisps[wisps.length - 1].changePosition();
                 wisps[wisps.length - 1].changeColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
-            } else if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.color != wisps[i].color) {
+            } else if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.y <= (wisps[i].y + wispHeight * 0.75) && ghost.color != wisps[i].color) {
                 //gameover = true;
                 clearInterval(wispsInterval);
                 clearInterval(ghostColorInterval);
@@ -447,7 +480,7 @@ document.getElementById("start").onclick = function () {
                 document.getElementById("start").style.visibility = "visible";
 
 
-            } else if (wisps[i].x < -10) { // fix this werid thing to redraw items that move out of the screen 
+            } else if (wisps[i].x < -10 || wisps[i].x > 110 || wisps[i].y < -10 || wisps[i].y > 110) { // fix this werid thing to redraw items that move out of the screen 
                 //shift the wisp object to the back and fix the iterations of the loop
                 var removedWisps = wisps.splice(i, 1);
                 wisps = wisps.concat(removedWisps);
@@ -457,8 +490,7 @@ document.getElementById("start").onclick = function () {
 
                 // redraw the wisp to the end
                 wisps[wisps.length - 1].element.parentElement.removeChild(wisps[wisps.length - 1].element);
-                var previousWispX = wisps[wisps.length - 2].x;
-                wisps[wisps.length - 1].x = previousWispX + 25;
+                wisps[wisps.length - 1].changePosition();
                 wisps[wisps.length - 1].changeColor(ghost.color);
                 wisps[wisps.length - 1].draw();
 
