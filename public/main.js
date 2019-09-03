@@ -346,11 +346,11 @@ Wisp.prototype.move = function () {
 
         }
         if (currentWisp.yDirection == "up") {
-            currentWisp.y -= 0.20;
+            currentWisp.y -= 0.25;
             currentWisp.element.style.top = currentWisp.y + "%";
 
         } else if (currentWisp.yDirection == "down") {
-            currentWisp.y += 0.20;
+            currentWisp.y += 0.25;
             currentWisp.element.style.top = currentWisp.y + "%";
 
         }
@@ -456,9 +456,9 @@ document.getElementById("start").onclick = function () {
 
     var ghostColorCountdown = setInterval(function () {
 
-        var currentTime = document.querySelector("#score .col-12 h5").textContent.split(" ")[3];
-        var newTime = currentTime == "0" ? "Colour Change in: 8" : "Colour Change in: " + (parseInt(currentTime) - 1);
-        document.querySelector("#score .col-12 h5").textContent = newTime;
+        var currentTime = document.querySelector("#game .col-12 h5").textContent;
+        var newTime = currentTime == "0" ? "8" : (parseInt(currentTime) - 1).toString(); //animating countdown?
+        document.querySelector("#game .col-12 h5").textContent = newTime;
 
     }, 1000);
 
@@ -518,8 +518,9 @@ document.getElementById("start").onclick = function () {
                 ghost = null;
                 wisps = [];
 
-                document.querySelector("#score .col-12 h5").textContent = "Color Change in: 8"; // fix this  - fixed
+                document.querySelector("#game .col-12 h5").textContent = "8"; // fix this  - fixed
                 // other things: increasing dfficulty and fixing ghosts (spawning, direction, colours etc) then saving scores
+                // big countdown in the background and fix up down - done and done?
                 setup();
 
                 document.getElementById("gameover-div").style.opacity = "1";

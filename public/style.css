@@ -147,11 +147,12 @@ input+p {
     font-size: 60px;
 }
 
-#game-container #score .col-12 h5 {
+#game-container #game .col-12 h5 {
     position: absolute;
-    top: 10px;
-    margin-right: 70%;
-    text-align: left;
+    top: 35%;
+    left: 45%;
+    font-size: 150px;
+    opacity:0.8;
 }
 
 #game-container #game {
