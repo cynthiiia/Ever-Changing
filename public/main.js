@@ -26,6 +26,8 @@ var leftFired = false;
 var upFired = false;
 var downFired = false;
 var gameover = false;
+var countdownCycles = 0;
+var timeBetweenChange = 10;
 
 //Navbar signup/signout and login action
 document.getElementById("signupOpen").onclick = function () {
@@ -224,10 +226,10 @@ Ghost.prototype.draw = function () {
 Ghost.prototype.moveRight = function () {
     var currentGhost = this;
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
-    var ghostSize = currentGhost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
+    var ghostWidth = currentGhost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen; to prevent ghost from leaving the screen
 
     var rightIntervalId = setInterval(function () {
-        if (currentGhost.x + ghostSize + 0.6 < 100) {
+        if (currentGhost.x + ghostWidth + 0.6 < 100) {
             currentGhost.x += 0.6;
             currentGhost.element.style.left = currentGhost.x + "%";
         } else {
@@ -256,10 +258,13 @@ Ghost.prototype.moveLeft = function () {
 
 Ghost.prototype.moveUp = function () {
     var currentGhost = this;
+    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
+    var yPercentToMove = gameScreenWidth * 0.006 / gameScreenHeight * 100;
 
     var upIntervalId = setInterval(function () {
-        if (currentGhost.y - 0.6 > 0) {
-            currentGhost.y -= 0.6;
+        if (currentGhost.y - yPercentToMove > 0) {
+            currentGhost.y -= yPercentToMove;
             currentGhost.element.style.top = currentGhost.y + "%";
         } else {
             clearInterval(upIntervalId);
@@ -268,14 +273,19 @@ Ghost.prototype.moveUp = function () {
     }, 10)
     this.interval[2] = upIntervalId;
 
+
 }
 
 Ghost.prototype.moveDown = function () {
     var currentGhost = this;
+    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
+    var ghostHeight = currentGhost.element.clientHeight / gameScreenHeight * 100; // as a percent of the screen; to prevent ghost from leaving the screen
+    var yPercentToMove = gameScreenWidth * 0.006 / gameScreenHeight * 100; // take 0.6% of the Width of the screen and divide it by the height to move the same amount as left and right
 
     var downIntervalId = setInterval(function () {
-        if (currentGhost.y + 0.6 < 100) {
-            currentGhost.y += 0.6;
+        if (currentGhost.y + yPercentToMove + ghostHeight < 100) {
+            currentGhost.y += yPercentToMove;
             currentGhost.element.style.top = currentGhost.y + "%";
         } else {
             clearInterval(downIntervalId);
@@ -316,11 +326,11 @@ Wisp.prototype.changePositionDirection = function () {
     } else if (this.x > 70 && !(this.y >= 30 && this.y <= 70)) { // right side top and bottom 
         this.xDirection = "left";
         this.yDirection = this.y < 30 ? "down" : "up"
-    } else if ((this.x >= 30 && this.x <= 70) && !(this.y >= 0 && this.y <= 100)) {
-        this.xDirection = Math.floor(Math.random() * 2) == 0 ? "left" : "right";
+    } else if ((this.x >= 30 && this.x <= 70) && !(this.y >= 0 && this.y <= 100)) { // top and bottom horizontal area
+        this.xDirection = Math.floor(Math.random() * 3) == 0 ? "none" : (Math.floor(Math.random() * 2) == 0 ? "left" : "right");
         this.yDirection = this.y < 0 ? "down" : "up"
-    } else if (!(this.x >= 30 && this.x <= 70) && (this.y >= 0 && this.y <= 100)) {
-        this.yDirection = Math.floor(Math.random() * 2) == 0 ? "down" : "up";
+    } else if (!(this.x >= 30 && this.x <= 70) && (this.y >= 0 && this.y <= 100)) { // left and right side vertical areas 
+        this.yDirection = Math.floor(Math.random() * 3) == 0 ? "none" : (Math.floor(Math.random() * 2) == 0 ? "down" : "up");
         this.xDirection = this.x < 0 ? "right" : "left"
 
     }
@@ -335,22 +345,28 @@ Wisp.prototype.draw = function () {
 }
 Wisp.prototype.move = function () {
     var currentWisp = this;
+    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
+
     this.interval = setInterval(function () {
+        var speedX = Math.random() * (0.3) + 0.1;
+        var speedY = (speedX / 100) * gameScreenWidth / gameScreenHeight * 100;
+
         if (currentWisp.xDirection == "left") {
-            currentWisp.x -= 0.20;
+            currentWisp.x -= speedX;
             currentWisp.element.style.left = currentWisp.x + "%";
 
         } else if (currentWisp.xDirection == "right") {
-            currentWisp.x += 0.20;
+            currentWisp.x += speedX;
             currentWisp.element.style.left = currentWisp.x + "%";
 
         }
         if (currentWisp.yDirection == "up") {
-            currentWisp.y -= 0.25;
+            currentWisp.y -= speedY;
             currentWisp.element.style.top = currentWisp.y + "%";
 
         } else if (currentWisp.yDirection == "down") {
-            currentWisp.y += 0.25;
+            currentWisp.y += speedY;
             currentWisp.element.style.top = currentWisp.y + "%";
 
         }
@@ -454,21 +470,49 @@ document.getElementById("start").onclick = function () {
         wisps[i].move();
     }
 
+
     var ghostColorCountdown = setInterval(function () {
+        // Increment seconds elapsed counter
+
 
         var currentTime = document.querySelector("#game .col-12 h5").textContent;
-        var newTime = currentTime == "0" ? "8" : (parseInt(currentTime) - 1).toString(); //animating countdown?
+
+        if (currentTime == "0") {
+            countdownCycles += 1;
+            if ((countdownCycles % 3) == 0 && countdownCycles < 13) {
+                timeBetweenChange -= 1;
+            }
+            // Redraw the ghost if countdown hits 0
+            ghost.changeColor();
+            ghost.element.parentElement.removeChild(ghost.element);
+            ghost.draw();
+
+        }
+
+        var newTime = currentTime == "0" ? (timeBetweenChange - 1).toString() : (parseInt(currentTime) - 1).toString(); //animating countdown?TO DO 
         document.querySelector("#game .col-12 h5").textContent = newTime;
+
 
     }, 1000);
 
-    // set up every 8 seconds the ghost will change colour
-    var ghostColorInterval = setInterval(function () {
+    // set up every 9 seconds the ghost will change colour
+    /*     var ghostColorInterval = setInterval(function () {
+            // Redraw the ghost
+            ghost.changeColor();
+            ghost.element.parentElement.removeChild(ghost.element);
+            ghost.draw();
+        }, 9000) */
+    /* var ghostColorChange = function () {
         // Redraw the ghost
         ghost.changeColor();
         ghost.element.parentElement.removeChild(ghost.element);
         ghost.draw();
-    }, 9000)
+        if (countdownCycles % timeBetweenChange == 0 && countdownCycles < 17) {
+            timeBetweenChange -= 1000;
+        }
+        ghostColorInterval = setTimeout(ghostColorChange, timeBetweenChange);
+    }
+    var ghostColorInterval = setTimeout(ghostColorChange, timeBetweenChange); */
 
     //set up every 10 ms there will be a check if the wisps and ghost are touching, and checks if its the same colour or not and handles it. also checks if the wisps are out of screen
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
@@ -504,8 +548,10 @@ document.getElementById("start").onclick = function () {
             } else if (ghost.x + ghostWidth >= (wisps[i].x + wispWidth * 0.15) && ghost.x <= (wisps[i].x + wispWidth * 0.85) && ghost.y + ghostHeight >= (wisps[i].y + wispHeight * 0.25) && ghost.y <= (wisps[i].y + wispHeight * 0.75) && ghost.color != wisps[i].color) {
                 //gameover = true;
                 clearInterval(wispsInterval);
-                clearInterval(ghostColorInterval);
+                //clearInterval(ghostColorInterval);
                 clearInterval(ghostColorCountdown);
+                countdownCycles = 0;
+                timeBetweenChange = 10;
                 for (let i = 0; i < wisps.length; i++) {
                     clearInterval(wisps[i].interval);
                 }
@@ -520,7 +566,7 @@ document.getElementById("start").onclick = function () {
 
                 document.querySelector("#game .col-12 h5").textContent = "8"; // fix this  - fixed
                 // other things: increasing dfficulty and fixing ghosts (spawning, direction, colours etc) then saving scores
-                // big countdown in the background and fix up down - done and done?
+                // big countdown in the background and fix up down - done and done
                 setup();
 
                 document.getElementById("gameover-div").style.opacity = "1";
