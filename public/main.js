@@ -15,8 +15,9 @@ var db = firebase.firestore();
 var auth = firebase.auth();
 
 //User Data
-var name, email;
+var name, email, userId;
 var score = 0;
+var highscore = 0;
 var ghost;
 var wisps = [];
 var colors = ["white", "pink", "blue", "green", "purple"];
@@ -137,7 +138,7 @@ document.getElementById("signupSubmit").onclick = function () {
             } else if (errorCode == 'auth/invalid-email') {
                 alert('Please enter a valid email. ');
             } else if (errorCode == 'auth/operation-not-allowed') {
-                alert('This account is no enabled. Please contact support.')
+                alert('This account is not enabled. Please contact support.')
             } else if (errorCode == 'auth/weak-password') {
                 alert('Password is too weak.')
             }
@@ -320,7 +321,7 @@ Wisp.prototype.changeSpeed = function (countdownCycles) {
     if (countdownCycles <= 10) {
         this.speedX = Math.random() * (0.10) + 0.15 + 0.02 * (countdownCycles);
         this.speedY = (this.speedX / 100) * gameScreenWidth / gameScreenHeight * 100;
-        
+
     }
 }
 Wisp.prototype.changePositionDirection = function () {
@@ -425,6 +426,8 @@ document.getElementById("start").onclick = function () {
     document.getElementById("start").style.visibility = "hidden";
     document.getElementById("gameover-div").style.opacity = "0";
     document.getElementById("gameover-div").style.visibility = "hidden";
+    
+    document.getElementById("highscore").removeAttribute("class");
 
     document.getElementById("score").children[0].children[0].textContent = 0; // cant clear this yet - fixed
     score = 0;
@@ -476,23 +479,29 @@ document.getElementById("start").onclick = function () {
     for (let i = 0; i < wisps.length; i++) {
         wisps[i].move();
     }
-    
+
     document.querySelector("#game .col-12 h5").className += "animated-shrink-text";
     var ghostColorCountdown = setInterval(function () {
-        var countdown =  document.querySelector("#game .col-12 h5");
+        var countdown = document.querySelector("#game .col-12 h5");
+
+        // Animation using transitions - works but laggy
+        /* var firstVersion = countdown.classList.contains("animated-shrink-text");
         if (countdown.classList.contains("animated-shrink-text")) {
             countdown.classList.remove("animated-shrink-text");
-            countdown.className += "animated-expand-text";
-            countdown.classList.remove("animated-expand-text");
-            countdown.className += "animated-shrink-text-2";
 
         } else if (countdown.classList.contains("animated-shrink-text-2")) {
             countdown.classList.remove("animated-shrink-text-2");
-            countdown.className += "animated-expand-text";
-            countdown.classList.remove("animated-expand-text");
-            countdown.className += "animated-shrink-text";
+        };
+        setTimeout(function() {
+            if (firstVersion) {
+                countdown.className += "animated-shrink-text-2";
+    
+            } else if (!firstVersion) {
+                countdown.className += "animated-shrink-text";
+            }
 
-        }
+        },1); */
+
         // Increment seconds elapsed counter
 
 
@@ -594,10 +603,41 @@ document.getElementById("start").onclick = function () {
                 // big countdown in the background and fix up down - done and done
                 setup();
 
-                document.getElementById("gameover-div").style.opacity = "1";
-                document.getElementById("gameover-div").style.visibility = "visible";
-                document.getElementById("start").style.opacity = "1";
-                document.getElementById("start").style.visibility = "visible";
+                if (email) {
+                    db.collection("users").doc(userId).get().then(function (user) {
+                        var savedHighscore = user.data().highscore;
+
+                        if (savedHighscore >= score) {
+                            document.getElementById("highscore").textContent = "Highscore " + savedHighscore;
+
+                        } else {
+                            db.collection("users").doc(userId).set({
+                                highscore: score
+                            });
+                            document.getElementById("highscore").textContent = "Highscore " + score;
+                            document.getElementById("highscore").className += "animated-new-highscore";
+                        }
+                        document.getElementById("gameover-div").style.opacity = "1";
+                        document.getElementById("gameover-div").style.visibility = "visible";
+                        document.getElementById("start").style.opacity = "1";
+                        document.getElementById("start").style.visibility = "visible";
+
+
+                    })
+
+                } else {
+                    if (score > highschore) {
+                        highscore = score;
+                        
+                        document.getElementById("highscore").className += "animated-new-highscore";
+                    }
+                    document.getElementById("highscore").textContent = "Highscore " + highscore;
+
+                    document.getElementById("gameover-div").style.opacity = "1";
+                    document.getElementById("gameover-div").style.visibility = "visible";
+                    document.getElementById("start").style.opacity = "1";
+                    document.getElementById("start").style.visibility = "visible";
+                }
                 break;
 
 
@@ -636,6 +676,8 @@ function initApp() {
             document.querySelector("#userOpen").innerHTML = '<span class="fa fa-user"></span>' + "&nbsp;&nbsp;" + user.displayName; // dont think this should be an isue?
             name = user.displayName;
             email = user.email;
+            userId = user.uid;
+
 
         } else if (user && !(user.emailVerified)) {
             document.getElementById("loginOpen").style.display = "block";
