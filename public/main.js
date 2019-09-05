@@ -317,8 +317,8 @@ Wisp.prototype.changeSpeed = function (countdownCycles) {
     // setting the speed 
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
     var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
-    if (countdownCycles <= 15) {
-        this.speedX = Math.random() * (0.10) + 0.15 + 0.01 * (countdownCycles);
+    if (countdownCycles <= 10) {
+        this.speedX = Math.random() * (0.10) + 0.15 + 0.02 * (countdownCycles);
         this.speedY = (this.speedX / 100) * gameScreenWidth / gameScreenHeight * 100;
         
     }
@@ -476,13 +476,27 @@ document.getElementById("start").onclick = function () {
     for (let i = 0; i < wisps.length; i++) {
         wisps[i].move();
     }
-
-
+    
+    document.querySelector("#game .col-12 h5").className += "animated-shrink-text";
     var ghostColorCountdown = setInterval(function () {
+        var countdown =  document.querySelector("#game .col-12 h5");
+        if (countdown.classList.contains("animated-shrink-text")) {
+            countdown.classList.remove("animated-shrink-text");
+            countdown.className += "animated-expand-text";
+            countdown.classList.remove("animated-expand-text");
+            countdown.className += "animated-shrink-text-2";
+
+        } else if (countdown.classList.contains("animated-shrink-text-2")) {
+            countdown.classList.remove("animated-shrink-text-2");
+            countdown.className += "animated-expand-text";
+            countdown.classList.remove("animated-expand-text");
+            countdown.className += "animated-shrink-text";
+
+        }
         // Increment seconds elapsed counter
 
 
-        var currentTime = document.querySelector("#game .col-12 h5").textContent;
+        var currentTime = countdown.textContent;
 
         if (currentTime == "0") {
             countdownCycles += 1;
@@ -491,7 +505,6 @@ document.getElementById("start").onclick = function () {
                 wisps.push(new Wisp("white", "wisp" + wisps.length, 10, countdownCycles));
                 wisps[wisps.length - 1].draw(); // fix error when game is overand increase speed of the ghosts 
                 wisps[wisps.length - 1].move();
-                console.log(wisps.length);
             }
             // Redraw the ghost if countdown hits 0
             ghost.changeColor();
@@ -501,8 +514,7 @@ document.getElementById("start").onclick = function () {
         }
 
         var newTime = currentTime == "0" ? (timeBetweenChange).toString() : (parseInt(currentTime) - 1).toString(); //animating countdown?TO DO 
-        document.querySelector("#game .col-12 h5").textContent = newTime;
-
+        countdown.textContent = newTime;
 
     }, 1000);
 
@@ -535,9 +547,6 @@ document.getElementById("start").onclick = function () {
     var wispsInterval = setInterval(function () {
         var numOfIterations = wisps.length;
         for (let i = 0; i < numOfIterations; i++) {
-            if (i == 0 ) {
-                console.log(wisps[0].speedX + " " + wisps[0].speedY);
-            }
             var wispWidth = wisps[i].element.clientWidth / gameScreenWidth * 100; // as a percent of the screen
             var wispHeight = wisps[i].element.clientHeight / gameScreenHeight * 100; // as a percent of the screen
             // var wispHeight = wisps[i].element.clientHeight / gameScreenWidth * 100; // as a percent of the screen
@@ -579,8 +588,9 @@ document.getElementById("start").onclick = function () {
                 ghost = null;
                 wisps = [];
 
-                document.querySelector("#game .col-12 h5").textContent = "8"; // fix this  - fixed
-                // other things: increasing dfficulty and fixing ghosts (spawning, direction, colours etc) then saving scores
+                document.querySelector("#game .col-12 h5").textContent = "9"; // fix this  - fixed
+                document.querySelector("#game .col-12 h5").removeAttribute("class");
+                // other things: increasing dfficulty - done and fixing ghosts (spawning, direction, colours etc) - done then saving scores
                 // big countdown in the background and fix up down - done and done
                 setup();
 

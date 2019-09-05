@@ -152,7 +152,41 @@ input+p {
     top: 35%;
     left: 43%;
     font-size: 175px;
-    opacity:0.5;
+    opacity: 0.5;
+}
+
+@keyframes shrink-text {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(0.3);
+    }
+}
+@keyframes shrink-text-2 {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(0.3);
+    }
+}
+@keyframes expand-text {
+    from {
+        transform: scale(0.3);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+.animated-shrink-text {
+    animation: shrink-text 1s;
+}
+.animated-shrink-text-2 {
+    animation: shrink-text-2 1s;
+}
+.animated-expand-text {
+    animation: expand-text 10ms;
 }
 
 #game-container #game {
