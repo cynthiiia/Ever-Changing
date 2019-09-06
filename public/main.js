@@ -626,7 +626,7 @@ document.getElementById("start").onclick = function () {
                     })
 
                 } else {
-                    if (score > highschore) {
+                    if (score > highscore) {
                         highscore = score;
                         
                         document.getElementById("highscore").className += "animated-new-highscore";
@@ -638,6 +638,7 @@ document.getElementById("start").onclick = function () {
                     document.getElementById("start").style.opacity = "1";
                     document.getElementById("start").style.visibility = "visible";
                 }
+                document.getElementById("currentScore").textContent = "Current Score " + score;
                 break;
 
 

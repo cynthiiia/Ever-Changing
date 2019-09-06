@@ -139,7 +139,7 @@ input+p {
 }
 
 #game-container #score .col-12 {
-    z-index: 4;
+    /**z-index: 4;**/
     height: 100%;
 }
 
@@ -160,6 +160,7 @@ input+p {
     from {
         transform: scale(1);
     }
+
     to {
         transform: scale(0.3);
     }
@@ -169,6 +170,7 @@ input+p {
     animation: shrink-text 1s;
     animation-iteration-count: infinite;
 }
+
 /** animate using transitions - working but laggy **/
 /* .animated-shrink-text {
     transform: scale(0.3);
@@ -212,6 +214,7 @@ input+p {
     left: 10%;
 }
 
+/*start button */
 #game-container #game #start-div {
     display: flex;
     justify-content: center;
@@ -231,6 +234,7 @@ input+p {
     transition-timing-function: ease-in;
 }
 
+/* gameover slide*/
 #game-container #gameover-div {
     position: absolute;
     height: calc(100% - 76px);
@@ -238,7 +242,7 @@ input+p {
     margin: 0;
     padding: 0;
     justify-content: center;
-    align-content: center;
+    /**align-content: center;**/
     background-color: black;
     z-index: 4;
     opacity: 0;
@@ -250,27 +254,101 @@ input+p {
 }
 
 #game-container #gameover-div h1 {
-    font-size: 70px;
+    font-size: 90px;
     color: white;
+    margin-bottom: 10%;
+    margin-top: 10%;
 
 }
-#game-container #gameover-div #highscore {
+
+#game-container #gameover-div #highscore,
+#game-container #gameover-div #currentScore {
     width: 60%;
     margin: auto;
+    font-size: 30px;
 }
+
+#game-container #gameover-div #currentScore {
+    margin-bottom: 0.3%;
+}
+
+/*animation for the highscore */
 @keyframes new-highscore {
     from {
         transform: scale(1);
-        
+
     }
+
     to {
         transform: scale(1.5);
-        
+
     }
 }
+
 .animated-new-highscore {
     animation: new-highscore 0.5s;
     animation-direction: alternate;
-    animation-iteration-count:2;
+    animation-iteration-count: 2;
     color: rgb(255, 225, 0);
+}
+
+
+@media only screen and (max-width: 575px) {
+
+    #game-container #gameover-div #highscore,
+    #game-container #gameover-div #currentScore {
+        font-size: 16px;
+    }
+
+    #game-container #gameover-div h1 {
+        font-size: 50px;
+    }
+}
+
+@media only screen and (min-width: 576px) {
+
+    #game-container #gameover-div #highscore,
+    #game-container #gameover-div #currentScore {
+        font-size: 18px;
+    }
+
+    #game-container #gameover-div h1 {
+        font-size: 55px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+
+    #game-container #gameover-div #highscore,
+    #game-container #gameover-div #currentScore {
+        font-size: 20px;
+    }
+
+    #game-container #gameover-div h1 {
+        font-size: 70px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+
+    #game-container #gameover-div #highscore,
+    #game-container #gameover-div #currentScore {
+        font-size: 25px;
+    }
+
+    #game-container #gameover-div h1 {
+        font-size: 80px;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+
+    #game-container #gameover-div #highscore,
+    #game-container #gameover-div #currentScore {
+        font-size: 30px;
+    }
+
+    #game-container #gameover-div h1 {
+        font-size: 90px; /** 5.5vw and 2vw **/
+    }
 }
