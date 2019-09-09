@@ -96,10 +96,32 @@
 
     <div class="container-fluid" id="game-container">
         <div class='row' id='gameover-div'>
-            <div class="col-12 text-center">
-                <h1>Game Over</h1>
-                <h2 id="currentScore">Highscore </h2>
-                <h2 id="highscore">Highscore </h2>
+            <div class="col-12">
+                <h1 class="text-center">Game Over</h1>
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-6">
+                        <h2 class="scores">Current Score </h2>
+                    </div>
+                    <div class="col-2">
+                        <h2 class="scores" id="currentScore">0</h2>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-6">
+                        <h2 class="scores" id="highscore-label">Highscore </h2>
+                    </div>
+                    <div class="col-2">
+                        <h2 class="scores" id="highscore">0</h2>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row" id="score">
@@ -109,7 +131,7 @@
         </div>
         <div class="row" id="game">
             <div class="col-12">
-                <h5>9</h5>
+                <h5 class="text-center">9</h5>
                 <div id="start-div">
                     <button type="button" class="btn btn-success" id="start">Start</button>
                 </div>

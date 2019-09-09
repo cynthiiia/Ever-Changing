@@ -118,9 +118,6 @@ input+p {
     width: 100%;
     padding: 66px 10px 10px 10px;
     background-image: url("images/background.png");
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
     color: white;
     font-family: 'Press Start 2P', cursive;
@@ -150,7 +147,7 @@ input+p {
 #game-container #game .col-12 h5 {
     position: absolute;
     top: 35%;
-    left: 43%;
+    width: 100%;
     font-size: 175px;
     opacity: 0.5;
 }
@@ -224,9 +221,9 @@ input+p {
 }
 
 #game-container #game #start {
-    height: 100px;
-    width: 300px;
-    font-size: 35px;
+    height: 70px;
+    width: 200px;
+    font-size: 25px;
     z-index: 4;
     opacity: 1;
     visibility: visible;
@@ -256,20 +253,9 @@ input+p {
 #game-container #gameover-div h1 {
     font-size: 90px;
     color: white;
-    margin-bottom: 10%;
-    margin-top: 10%;
+    margin-bottom: 10vw;
+    margin-top: 10vw;
 
-}
-
-#game-container #gameover-div #highscore,
-#game-container #gameover-div #currentScore {
-    width: 60%;
-    margin: auto;
-    font-size: 30px;
-}
-
-#game-container #gameover-div #currentScore {
-    margin-bottom: 0.3%;
 }
 
 /*animation for the highscore */
@@ -295,60 +281,67 @@ input+p {
 
 @media only screen and (max-width: 575px) {
 
-    #game-container #gameover-div #highscore,
-    #game-container #gameover-div #currentScore {
+    #game-container #gameover-div .scores {
         font-size: 16px;
     }
 
     #game-container #gameover-div h1 {
         font-size: 50px;
+        margin-bottom: 20vw;
+        margin-top: 20vw;
     }
+
 }
 
 @media only screen and (min-width: 576px) {
 
-    #game-container #gameover-div #highscore,
-    #game-container #gameover-div #currentScore {
+    #game-container #gameover-div .scores {
         font-size: 18px;
     }
 
     #game-container #gameover-div h1 {
         font-size: 55px;
+        margin-bottom: 15vw;
+        margin-top: 15vw;
     }
 }
 
 @media only screen and (min-width: 768px) {
 
-    #game-container #gameover-div #highscore,
-    #game-container #gameover-div #currentScore {
+    #game-container #gameover-div .scores {
         font-size: 20px;
     }
 
     #game-container #gameover-div h1 {
         font-size: 70px;
+        margin-bottom: 10vw;
+        margin-top: 10vw;
     }
 }
 
 @media only screen and (min-width: 992px) {
 
-    #game-container #gameover-div #highscore,
-    #game-container #gameover-div #currentScore {
+    #game-container #gameover-div .scores {
         font-size: 25px;
     }
 
     #game-container #gameover-div h1 {
         font-size: 80px;
+        margin-bottom: 10vw;
+        margin-top: 10vw;
     }
 }
 
 @media only screen and (min-width: 1200px) {
 
-    #game-container #gameover-div #highscore,
-    #game-container #gameover-div #currentScore {
+    #game-container #gameover-div .scores {
         font-size: 30px;
     }
 
     #game-container #gameover-div h1 {
-        font-size: 90px; /** 5.5vw and 2vw **/
+        font-size: 90px;
+        /** 5.5vw and 2vw **/
+        margin-bottom: 10vw;
+        margin-top: 10vw;
     }
 }

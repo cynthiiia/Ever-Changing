@@ -21,7 +21,7 @@ var highscore = 0;
 var ghost;
 var wisps = [];
 var colors = ["white", "pink", "blue", "green", "purple"];
-var startingY = 40;
+var startingY = 25;
 var rightFired = false;
 var leftFired = false;
 var upFired = false;
@@ -228,10 +228,11 @@ Ghost.prototype.moveRight = function () {
     var currentGhost = this;
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
     var ghostWidth = currentGhost.element.clientWidth / gameScreenWidth * 100; // as a percent of the screen; to prevent ghost from leaving the screen
+    var xPercentToMove = 6 / gameScreenWidth * 100;
 
     var rightIntervalId = setInterval(function () {
-        if (currentGhost.x + ghostWidth + 0.6 < 100) {
-            currentGhost.x += 0.6;
+        if (currentGhost.x + ghostWidth + xPercentToMove < 100) {
+            currentGhost.x += xPercentToMove;
             currentGhost.element.style.left = currentGhost.x + "%";
         } else {
             clearInterval(rightIntervalId);
@@ -243,10 +244,12 @@ Ghost.prototype.moveRight = function () {
 
 Ghost.prototype.moveLeft = function () {
     var currentGhost = this;
+    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+    var xPercentToMove = 6 / gameScreenWidth * 100;
 
     var leftIntervalId = setInterval(function () {
-        if (currentGhost.x - 0.6 > 0) {
-            currentGhost.x -= 0.6;
+        if (currentGhost.x - xPercentToMove > 0) {
+            currentGhost.x -= xPercentToMove;
             currentGhost.element.style.left = currentGhost.x + "%";
         } else {
             clearInterval(leftIntervalId);
@@ -259,9 +262,8 @@ Ghost.prototype.moveLeft = function () {
 
 Ghost.prototype.moveUp = function () {
     var currentGhost = this;
-    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
     var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
-    var yPercentToMove = gameScreenWidth * 0.006 / gameScreenHeight * 100;
+    var yPercentToMove = 6 / gameScreenHeight * 100;
 
     var upIntervalId = setInterval(function () {
         if (currentGhost.y - yPercentToMove > 0) {
@@ -279,10 +281,9 @@ Ghost.prototype.moveUp = function () {
 
 Ghost.prototype.moveDown = function () {
     var currentGhost = this;
-    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
     var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
     var ghostHeight = currentGhost.element.clientHeight / gameScreenHeight * 100; // as a percent of the screen; to prevent ghost from leaving the screen
-    var yPercentToMove = gameScreenWidth * 0.006 / gameScreenHeight * 100; // take 0.6% of the Width of the screen and divide it by the height to move the same amount as left and right
+    var yPercentToMove = 6 / gameScreenHeight * 100; // take 0.6% of the Width of the screen and divide it by the height to move the same amount as left and right
 
     var downIntervalId = setInterval(function () {
         if (currentGhost.y + yPercentToMove + ghostHeight < 100) {
@@ -315,12 +316,10 @@ function Wisp(color, id, value, countdownCycles) {
     this.interval;
 }
 Wisp.prototype.changeSpeed = function (countdownCycles) {
-    // setting the speed 
-    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
-    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
+    // setting the speed in pixels for consistent movement speed, not dependent on game screen width
     if (countdownCycles <= 10) {
-        this.speedX = Math.random() * (0.10) + 0.15 + 0.02 * (countdownCycles);
-        this.speedY = (this.speedX / 100) * gameScreenWidth / gameScreenHeight * 100;
+        this.speedX = (Math.random() * (1) + 1.5 + 0.2 * (countdownCycles));
+        this.speedY = (this.speedX);
 
     }
 }
@@ -356,25 +355,27 @@ Wisp.prototype.draw = function () {
     this.element.style.left = this.x + "%";
 }
 Wisp.prototype.move = function () {
+    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
     var currentWisp = this;
 
     this.interval = setInterval(function () {
 
         if (currentWisp.xDirection == "left") {
-            currentWisp.x -= currentWisp.speedX;
+            currentWisp.x -= currentWisp.speedX / gameScreenWidth * 100;
             currentWisp.element.style.left = currentWisp.x + "%";
 
         } else if (currentWisp.xDirection == "right") {
-            currentWisp.x += currentWisp.speedX;
+            currentWisp.x += currentWisp.speedX / gameScreenWidth * 100;
             currentWisp.element.style.left = currentWisp.x + "%";
 
         }
         if (currentWisp.yDirection == "up") {
-            currentWisp.y -= currentWisp.speedY;
+            currentWisp.y -= currentWisp.speedY / gameScreenHeight * 100;
             currentWisp.element.style.top = currentWisp.y + "%";
 
         } else if (currentWisp.yDirection == "down") {
-            currentWisp.y += currentWisp.speedY;
+            currentWisp.y += currentWisp.speedY / gameScreenHeight * 100;
             currentWisp.element.style.top = currentWisp.y + "%";
 
         }
@@ -426,10 +427,11 @@ document.getElementById("start").onclick = function () {
     document.getElementById("start").style.visibility = "hidden";
     document.getElementById("gameover-div").style.opacity = "0";
     document.getElementById("gameover-div").style.visibility = "hidden";
-    
-    document.getElementById("highscore").removeAttribute("class");
 
-    document.getElementById("score").children[0].children[0].textContent = 0; // cant clear this yet - fixed
+    document.getElementById("highscore").classList.remove("animated-new-highscore");
+    document.getElementById("highscore-label").classList.remove("animated-new-highscore");
+
+    document.getElementById("score").children[0].children[0].textContent = 0;
     score = 0;
 
     // set up the the movement for the ghost
@@ -480,7 +482,7 @@ document.getElementById("start").onclick = function () {
         wisps[i].move();
     }
 
-    document.querySelector("#game .col-12 h5").className += "animated-shrink-text";
+    document.querySelector("#game .col-12 h5").className += " animated-shrink-text";
     var ghostColorCountdown = setInterval(function () {
         var countdown = document.querySelector("#game .col-12 h5");
 
@@ -598,8 +600,8 @@ document.getElementById("start").onclick = function () {
                 wisps = [];
 
                 document.querySelector("#game .col-12 h5").textContent = "9"; // fix this  - fixed
-                document.querySelector("#game .col-12 h5").removeAttribute("class");
-                // other things: increasing dfficulty - done and fixing ghosts (spawning, direction, colours etc) - done then saving scores
+                document.querySelector("#game .col-12 h5").classList.remove("animated-shrink-text")
+                // other things: increasing dfficulty - done and fixing ghosts (spawning, direction, colours etc) - done then saving scores - done
                 // big countdown in the background and fix up down - done and done
                 setup();
 
@@ -608,14 +610,15 @@ document.getElementById("start").onclick = function () {
                         var savedHighscore = user.data().highscore;
 
                         if (savedHighscore >= score) {
-                            document.getElementById("highscore").textContent = "Highscore " + savedHighscore;
+                            document.getElementById("highscore").textContent = savedHighscore;
 
                         } else {
                             db.collection("users").doc(userId).set({
                                 highscore: score
                             });
-                            document.getElementById("highscore").textContent = "Highscore " + score;
-                            document.getElementById("highscore").className += "animated-new-highscore";
+                            document.getElementById("highscore").textContent = score;
+                            document.getElementById("highscore").className += " animated-new-highscore";
+                            document.getElementById("highscore-label").className += " animated-new-highscore";
                         }
                         document.getElementById("gameover-div").style.opacity = "1";
                         document.getElementById("gameover-div").style.visibility = "visible";
@@ -628,17 +631,18 @@ document.getElementById("start").onclick = function () {
                 } else {
                     if (score > highscore) {
                         highscore = score;
-                        
-                        document.getElementById("highscore").className += "animated-new-highscore";
+
+                        document.getElementById("highscore").className += " animated-new-highscore";
+                        document.getElementById("highscore-label").className += " animated-new-highscore";
                     }
-                    document.getElementById("highscore").textContent = "Highscore " + highscore;
+                    document.getElementById("highscore").textContent = highscore;
 
                     document.getElementById("gameover-div").style.opacity = "1";
                     document.getElementById("gameover-div").style.visibility = "visible";
                     document.getElementById("start").style.opacity = "1";
                     document.getElementById("start").style.visibility = "visible";
                 }
-                document.getElementById("currentScore").textContent = "Current Score " + score;
+                document.getElementById("currentScore").textContent = score;
                 break;
 
 
