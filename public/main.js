@@ -223,7 +223,18 @@ Ghost.prototype.draw = function () {
         }, 10)
     }
 } */
+function backgroundShift(direction) {
+    var currentBackgroundPosition = window.getComputedStyle(document.getElementById("game-container"), null).backgroundPosition.split(" ");
+    currentBackgroundPosition[0] = parseFloat(currentBackgroundPosition[0].replace("px", ""));
+    currentBackgroundPosition[1] = parseFloat(currentBackgroundPosition[1].replace("px", ""));
 
+  
+    if (direction == "right") {
+        document.getElementById("game-container").style.backgroundPosition = (currentBackgroundPosition[0] - 2) + "px " + currentBackgroundPosition[1] + "px";
+    } else if (direction == "left") {
+        document.getElementById("game-container").style.backgroundPosition = (currentBackgroundPosition[0] + 2) + "px " + currentBackgroundPosition[1] + "px";
+    }
+}
 Ghost.prototype.moveRight = function () {
     var currentGhost = this;
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
@@ -234,6 +245,7 @@ Ghost.prototype.moveRight = function () {
         if (currentGhost.x + ghostWidth + xPercentToMove < 100) {
             currentGhost.x += xPercentToMove;
             currentGhost.element.style.left = currentGhost.x + "%";
+            backgroundShift("right");
         } else {
             clearInterval(rightIntervalId);
             rightFired = false;
@@ -251,6 +263,7 @@ Ghost.prototype.moveLeft = function () {
         if (currentGhost.x - xPercentToMove > 0) {
             currentGhost.x -= xPercentToMove;
             currentGhost.element.style.left = currentGhost.x + "%";
+            backgroundShift("left");
         } else {
             clearInterval(leftIntervalId);
             leftFired = false;
