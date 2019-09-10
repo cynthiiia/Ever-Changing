@@ -355,11 +355,11 @@ Wisp.prototype.draw = function () {
     this.element.style.left = this.x + "%";
 }
 Wisp.prototype.move = function () {
-    var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
-    var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
     var currentWisp = this;
 
     this.interval = setInterval(function () {
+        var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
+        var gameScreenHeight = document.getElementById("game").children[0].clientHeight;
 
         if (currentWisp.xDirection == "left") {
             currentWisp.x -= currentWisp.speedX / gameScreenWidth * 100;
