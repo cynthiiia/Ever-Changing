@@ -224,6 +224,25 @@ Ghost.prototype.draw = function () {
     }
 } */
 
+function backgroundShift(direction) {
+
+    var currentBackgroundPosition = window.getComputedStyle(document.getElementById("game-container"), null).backgroundPosition.split(" ");
+    currentBackgroundPosition[0] = parseFloat(currentBackgroundPosition[0].replace("px", ""));
+    currentBackgroundPosition[1] = parseFloat(currentBackgroundPosition[1].replace("px", ""));
+
+
+    if (direction == "right") {
+        document.getElementById("game-container").style.backgroundPosition = (currentBackgroundPosition[0] - 0.5) + "px " + currentBackgroundPosition[1] + "px";
+    } else if (direction == "left") {
+        document.getElementById("game-container").style.backgroundPosition = (currentBackgroundPosition[0] + 0.5) + "px " + currentBackgroundPosition[1] + "px";
+    } else if (direction == "up") {
+        document.getElementById("game-container").style.backgroundPosition = (currentBackgroundPosition[0]) + "px " + (currentBackgroundPosition[1] + 0.5) + "px";
+    } else if (direction == "down") {
+        document.getElementById("game-container").style.backgroundPosition = (currentBackgroundPosition[0]) + "px " + (currentBackgroundPosition[1] - 0.5) + "px";
+    }
+
+}
+
 Ghost.prototype.moveRight = function () {
     var currentGhost = this;
     var gameScreenWidth = document.getElementById("game").children[0].clientWidth;
@@ -234,6 +253,7 @@ Ghost.prototype.moveRight = function () {
         if (currentGhost.x + ghostWidth + xPercentToMove < 100) {
             currentGhost.x += xPercentToMove;
             currentGhost.element.style.left = currentGhost.x + "%";
+            backgroundShift("right");
         } else {
             clearInterval(rightIntervalId);
             rightFired = false;
@@ -251,6 +271,7 @@ Ghost.prototype.moveLeft = function () {
         if (currentGhost.x - xPercentToMove > 0) {
             currentGhost.x -= xPercentToMove;
             currentGhost.element.style.left = currentGhost.x + "%";
+            backgroundShift("left");
         } else {
             clearInterval(leftIntervalId);
             leftFired = false;
@@ -269,6 +290,7 @@ Ghost.prototype.moveUp = function () {
         if (currentGhost.y - yPercentToMove > 0) {
             currentGhost.y -= yPercentToMove;
             currentGhost.element.style.top = currentGhost.y + "%";
+            backgroundShift("up");
         } else {
             clearInterval(upIntervalId);
             upFired = false;
@@ -289,6 +311,7 @@ Ghost.prototype.moveDown = function () {
         if (currentGhost.y + yPercentToMove + ghostHeight < 100) {
             currentGhost.y += yPercentToMove;
             currentGhost.element.style.top = currentGhost.y + "%";
+            backgroundShift("down");
         } else {
             clearInterval(downIntervalId);
             downFired = false;
@@ -601,6 +624,9 @@ document.getElementById("start").onclick = function () {
 
                 document.querySelector("#game .col-12 h5").textContent = "9"; // fix this  - fixed
                 document.querySelector("#game .col-12 h5").classList.remove("animated-shrink-text")
+
+                //Reset the background position
+                document.getElementById("game-container").style.backgroundPosition = "0px 0px";
                 // other things: increasing dfficulty - done and fixing ghosts (spawning, direction, colours etc) - done then saving scores - done
                 // big countdown in the background and fix up down - done and done
                 setup();

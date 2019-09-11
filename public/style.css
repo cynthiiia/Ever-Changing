@@ -118,10 +118,13 @@ input+p {
     width: 100%;
     padding: 66px 10px 10px 10px;
     background-image: url("images/background.png");
-    background-size: cover;
+    background-size: auto 120%;
     color: white;
     font-family: 'Press Start 2P', cursive;
     overflow: hidden;
+    
+    background-position:0px 0px;
+    background-repeat: repeat;
 
 }
 
